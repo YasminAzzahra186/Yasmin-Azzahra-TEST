@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BankDash - Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Inter', sans-serif; color: #343C6A; }
+    
+    .logo-font { 
+      font-family: 'Montserrat', sans-serif; 
+      font-weight: 800;
+      font-style: normal !important;
+    }
+
+    /* SIDEBAR STYLES - FIXED ALIGNMENT */
+    .sidebar-active { 
+      color: #1814F3 !important; 
+      background: linear-gradient(90deg, #F5F7FA 0%, rgba(245, 247, 250, 0) 100%); 
+      position: relative;
+    }
+
+    /* Indikator batang biru melengkung sesuai desain */
+    .sidebar-active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background-color: #1814F3;
+      border-radius: 0 10px 10px 0; 
+    }
+
+    nav a img {
+      transition: all 0.3s ease;
+      filter: grayscale(100%) opacity(0.6);
+    }
+
+    nav a:hover img, 
+    nav a.sidebar-active img {
+      filter: invert(15%) sepia(95%) saturate(6935%) hue-rotate(244deg) brightness(92%) contrast(105%);
+      opacity: 1;
+    }
+
+    nav a:hover { color: #1814F3 !important; }
+
+    /* Button Styles */
+    .btn-view-blue {
+      border: 1px solid #1814F3;
+      color: #1814F3;
+    }
+    .btn-view-blue:hover {
+      background-color: #1814F3;
+      color: white;
+    }
+
+    .btn-view-grey {
+      border: 1px solid #718EBF;
+      color: #718EBF;
+    }
+    .btn-view-grey:hover {
+      background-color: #718EBF;
+      color: white;
+    }
+
+    input:focus { outline: none; }
+  </style>
+</head>
+<body class="bg-[#F5F7FA] flex min-h-screen">
+
+  <aside class="w-[250px] bg-white border-r border-[#E6EFF5] hidden lg:block sticky top-0 h-screen shrink-0">
+    <div class="p-8 mb-4">
+      <div class="flex items-center gap-3 text-2xl logo-font">
+        <img src="../assets/icon.png" class="w-8 h-8" alt="logo">
+        BankDash.
+      </div>
+    </div>
+    <nav class="flex flex-col text-[#B1B1B1]">
+      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/dashboard.png" class="w-6 h-6"> Dashboard</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/transfer.png" class="w-6 h-6"> Transactions</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/user.png" class="w-6 h-6"> Accounts</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/economic-investment.png" class="w-6 h-6"> Investments</a>
+      <a href="../../index.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/credit-card.png" class="w-6 h-6"> Credit Cards</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/loan.png" class="w-6 h-6"> Loans</a>
+      <a href="Services.html" class="flex items-center gap-5 px-8 py-4 sidebar-active transition-all"><img src="../assets/service biru.png" class="w-6 h-6"> Services</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/econometrics.png" class="w-6 h-6"> My Privileges</a>
+      <a href="SettingPages1.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/settings solid.png" class="w-6 h-6"> Setting</a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 overflow-y-auto flex flex-col">
+    <header class="bg-white px-8 py-5 flex justify-between items-center border-b border-[#E6EFF5] sticky top-0 z-10">
+      <h1 class="text-2xl font-semibold text-[#343C6A]">Services</h1>
+      <div class="flex items-center gap-6">
+        <div class="relative hidden md:block">
+          <img src="../assets/search.png" alt="Search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-50 w-5">
+          <input type="text" placeholder="Search for something" class="bg-[#F5F7FA] pl-12 pr-6 py-3 rounded-full w-[280px] text-sm text-[#8BA3CB]">
+        </div>
+        <div class="flex gap-4">
+          <button class="w-12 h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center"><img src="../assets/settings.png" class="w-6 h-6"></button>
+          <button class="w-12 h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center"><img src="../assets/notification.png" class="w-6 h-6"></button>
+          <img src="../assets/Mask Group.png" class="w-12 h-12 rounded-full object-cover" alt="Profile">
+        </div>
+      </div>
+    </header>
+
+    <div class="p-8 w-full flex-1 space-y-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white p-6 rounded-[25px] flex items-center gap-6 shadow-sm">
+          <div class="w-16 h-16 bg-[#E7EDFF] rounded-2xl flex items-center justify-center shrink-0">
+            <img src="../assets/life-insurance filled.png" alt="" class="w-8 h-8">
+          </div>
+          <div><h3 class="text-lg font-bold">Life Insurance</h3><p class="text-sm text-[#718EBF]">Unlimited protection</p></div>
+        </div>
+        <div class="bg-white p-6 rounded-[25px] flex items-center gap-6 shadow-sm">
+          <div class="w-16 h-16 bg-[#FFF5D9] rounded-2xl flex items-center justify-center shrink-0">
+            <img src="../assets/bag.png" alt="" class="w-8 h-8">
+          </div>
+          <div><h3 class="text-lg font-bold">Shopping</h3><p class="text-sm text-[#718EBF]">Buy. Think. Grow.</p></div>
+        </div>
+        <div class="bg-white p-6 rounded-[25px] flex items-center gap-6 shadow-sm">
+          <div class="w-16 h-16 bg-[#DCFAF8] rounded-2xl flex items-center justify-center shrink-0">
+            <img src="../assets/shield.png" alt="" class="w-8 h-8">
+          </div>
+          <div><h3 class="text-lg font-bold">Safety</h3><p class="text-sm text-[#718EBF]">We are your allies</p></div>
+        </div>
+      </div>
+
+      <section>
+        <h2 class="text-2xl font-semibold mb-6 text-[#343C6A]">Bank Services List</h2>
+        <div class="space-y-4">
+          
+          <div class="bg-white p-5 rounded-[25px] flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-5 w-[280px] shrink-0">
+              <div class="w-12 h-12 bg-[#FFE0EB] rounded-2xl flex items-center justify-center"><img src="../assets/loan pink.png" class="w-6 h-6"></div>
+              <div><p class="text-[15px] font-bold text-[#343C6A]">Business loans</p><p class="text-[13px] text-[#718EBF]">It is a long established</p></div>
+            </div>
+            <div class="hidden lg:grid grid-cols-3 gap-12 flex-1 px-10">
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+            </div>
+            <button class="btn-view-grey px-6 py-2 rounded-full text-xs font-bold transition-all">View Details</button>
+          </div>
+
+          <div class="bg-white p-5 rounded-[25px] flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-5 w-[280px] shrink-0">
+              <div class="w-12 h-12 bg-[#FFF5D9] rounded-2xl flex items-center justify-center"><img src="../assets/briefcase.png" class="w-6 h-6"></div>
+              <div><p class="text-[15px] font-bold text-[#343C6A]">Checking accounts</p><p class="text-[13px] text-[#718EBF]">It is a long established</p></div>
+            </div>
+            <div class="hidden lg:grid grid-cols-3 gap-12 flex-1 px-10">
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+            </div>
+            <button class="btn-view-grey px-6 py-2 rounded-full text-xs font-bold transition-all">View Details</button>
+          </div>
+
+          <div class="bg-white p-5 rounded-[25px] flex items-center justify-between shadow-sm border border-[#1814F3]/10">
+            <div class="flex items-center gap-5 w-[280px] shrink-0">
+              <div class="w-12 h-12 bg-[#FFE0EB] rounded-2xl flex items-center justify-center"><img src="../assets/grafik batang.png" class="w-6 h-6"></div>
+              <div><p class="text-[15px] font-bold text-[#343C6A]">Savings accounts</p><p class="text-[13px] text-[#718EBF]">It is a long established</p></div>
+            </div>
+            <div class="hidden lg:grid grid-cols-3 gap-12 flex-1 px-10">
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+            </div>
+            <button class="btn-view-blue px-6 py-2 rounded-full text-xs font-bold transition-all">View Details</button>
+          </div>
+
+          <div class="bg-white p-5 rounded-[25px] flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-5 w-[280px] shrink-0">
+              <div class="w-12 h-12 bg-[#E7EDFF] rounded-2xl flex items-center justify-center"><img src="../assets/user 3 2.png" class="w-6 h-6"></div>
+              <div><p class="text-[15px] font-bold text-[#343C6A]">Debit and credit cards</p><p class="text-[13px] text-[#718EBF]">It is a long established</p></div>
+            </div>
+            <div class="hidden lg:grid grid-cols-3 gap-12 flex-1 px-10">
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+            </div>
+            <button class="btn-view-grey px-6 py-2 rounded-full text-xs font-bold transition-all">View Details</button>
+          </div>
+
+          <div class="bg-white p-5 rounded-[25px] flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-5 w-[280px] shrink-0">
+              <div class="w-12 h-12 bg-[#DCFAF8] rounded-2xl flex items-center justify-center"><img src="../assets/shield.png" class="w-6 h-6"></div>
+              <div><p class="text-[15px] font-bold text-[#343C6A]">Life Insurance</p><p class="text-[13px] text-[#718EBF]">It is a long established</p></div>
+            </div>
+            <div class="hidden lg:grid grid-cols-3 gap-12 flex-1 px-10">
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+            </div>
+            <button class="btn-view-grey px-6 py-2 rounded-full text-xs font-bold transition-all">View Details</button>
+          </div>
+
+          <div class="bg-white p-5 rounded-[25px] flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-5 w-[280px] shrink-0">
+              <div class="w-12 h-12 bg-[#FFE0EB] rounded-2xl flex items-center justify-center"><img src="../assets/loan pink.png" class="w-6 h-6"></div>
+              <div><p class="text-[15px] font-bold text-[#343C6A]">Business loans</p><p class="text-[13px] text-[#718EBF]">It is a long established</p></div>
+            </div>
+            <div class="hidden lg:grid grid-cols-3 gap-12 flex-1 px-10">
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+              <div class="space-y-1"><p class="text-sm font-semibold">Lorem Ipsum</p><p class="text-xs text-[#718EBF]">Many publishing</p></div>
+            </div>
+            <button class="btn-view-grey px-6 py-2 rounded-full text-xs font-bold transition-all">View Details</button>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

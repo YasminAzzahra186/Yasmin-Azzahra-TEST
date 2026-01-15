@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BankDash - Setting Edit Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Inter', sans-serif; color: #343C6A; }
+    .logo-font { font-family: 'Montserrat', sans-serif; font-weight: 800; font-style: normal !important; }
+
+    /* SIDEBAR STYLES UPDATED */
+    .sidebar-active { 
+      color: #1814F3 !important; 
+      background: linear-gradient(90deg, #F5F7FA 0%, rgba(245, 247, 250, 0) 100%); 
+      position: relative;
+    }
+    .sidebar-active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background-color: #1814F3;
+      border-radius: 0 10px 10px 0; 
+    }
+
+    nav a img { transition: all 0.3s ease; filter: grayscale(100%) opacity(0.6); }
+    nav a:hover img, nav a.sidebar-active img { filter: invert(15%) sepia(95%) saturate(6935%) hue-rotate(244deg) brightness(92%) contrast(105%); opacity: 1; }
+    nav a:hover { color: #1814F3 !important; }
+
+    .custom-input { border: 1px solid #DFEAF2; border-radius: 15px; padding: 13px 20px; color: #718EBF; font-size: 15px; width: 100%; background-color: white; }
+    .custom-input:focus { outline: none; border-color: #1814F3; }
+    label { font-size: 16px; color: #343C6A; margin-bottom: 12px; display: block; font-weight: 400; }
+    .tab-active { color: #1814F3; font-weight: 600; border-bottom: 3px solid #1814F3; padding-bottom: 8px; }
+  </style>
+</head>
+<body class="bg-[#F5F7FA] flex min-h-screen">
+
+  <aside class="w-[250px] bg-white border-r border-[#E6EFF5] hidden lg:block sticky top-0 h-screen shrink-0">
+    <div class="p-8 mb-4">
+      <div class="flex items-center gap-3 text-2xl logo-font">
+        <img src="../assets/icon.png" class="w-8 h-8" alt="logo">BankDash.
+      </div>
+    </div>
+    <nav class="flex flex-col text-[#B1B1B1]">
+      <a href="#" class="flex items-center gap-5 px-8 py-4"><img src="../assets/dashboard.png" class="w-6 h-6"> Dashboard</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4"><img src="../assets/transfer.png" class="w-6 h-6"> Transactions</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4"><img src="../assets/user.png" class="w-6 h-6"> Accounts</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4"><img src="../assets/economic-investment.png" class="w-6 h-6"> Investments</a>
+      <a href="../../index.html" class="flex items-center gap-5 px-8 py-4"><img src="../assets/credit-card.png" class="w-6 h-6"> Credit Cards</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4"><img src="../assets/loan.png" class="w-6 h-6"> Loans</a>
+      <a href="Services.html" class="flex items-center gap-5 px-8 py-4"><img src="../assets/service.png" class="w-6 h-6"> Services</a>
+      <a href="#" class="flex items-center gap-5 px-8 py-4"><img src="../assets/econometrics.png" class="w-6 h-6"> My Privileges</a>
+      <a href="SettingPages1.html" class="flex items-center gap-5 px-8 py-4 sidebar-active"><img src="../assets/settings biru.png" class="w-6 h-6"> Setting</a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 overflow-y-auto flex flex-col">
+    <header class="bg-white px-8 py-5 flex justify-between items-center border-b border-[#E6EFF5] sticky top-0 z-10">
+      <h1 class="text-2xl font-semibold text-[#343C6A]">Setting</h1>
+      <div class="flex items-center gap-6">
+        <div class="relative hidden md:block">
+          <img src="../assets/search.png" alt="Search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-50 w-5">
+          <input type="text" placeholder="Search for something" class="bg-[#F5F7FA] pl-12 pr-6 py-3 rounded-full w-[280px] text-sm focus:outline-none border-none">
+        </div>
+        <div class="flex gap-4">
+          <button class="w-12 h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center"><img src="../assets/settings.png" class="w-6 h-6"></button>
+          <button class="w-12 h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center"><img src="../assets/notification.png" class="w-6 h-6"></button>
+          <img src="../assets/Mask Group.png" class="w-12 h-12 rounded-full object-cover" alt="Profile">
+        </div>
+      </div>
+    </header>
+
+    <div class="p-8 w-full flex-1">
+      <div class="bg-white rounded-[25px] p-8 md:p-12 shadow-sm min-h-full">
+        <div class="flex gap-16 border-b border-[#F4F5F7] mb-12">
+          <a href="SettingPages1.html" class="tab-active cursor-pointer">Edit Profile</a>
+          <a href="SettingPages2.html" class="pb-3 text-[#718EBF] font-medium hover:text-[#1814F3] transition-all cursor-pointer">Preferences</a>
+          <a href="SettingPages3.html" class="pb-3 text-[#718EBF] font-medium hover:text-[#1814F3] transition-all cursor-pointer">Security</a>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-12 lg:gap-20">
+          <div class="relative w-max shrink-0 h-max mx-auto lg:mx-0">
+            <div class="w-32 h-32 rounded-full overflow-hidden border border-gray-100">
+              <img src="../assets/Mask Group.png" class="w-full h-full object-cover" alt="Avatar">
+            </div>
+            <button class="absolute bottom-1 right-1 bg-[#1814F3] w-9 h-9 rounded-full flex items-center justify-center shadow-md">
+              <img src="../assets/pencil.png" class="w-4 h-4" alt="Edit">
+            </button>
+          </div>
+
+          <form class="flex-1">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+              <div><label>Your Name</label><input type="text" value="Charlene Reed" class="custom-input"></div>
+              <div><label>User Name</label><input type="text" value="Charlene Reed" class="custom-input"></div>
+              <div><label>Email</label><input type="email" value="charlenereed@gmail.com" class="custom-input"></div>
+              <div><label>Password</label><input type="password" value="**********" class="custom-input"></div>
+              <div><label>Date of Birth</label>
+                <div class="relative">
+                  <input type="text" value="25 January 1990" class="custom-input pr-12">
+                  <img src="../assets/Vector.png" class="absolute right-5 top-1/2 -translate-y-1/2 w-4 opacity-50" alt="dropdown">
+                </div>
+              </div>
+              <div><label>Present Address</label><input type="text" value="San Jose, California, USA" class="custom-input"></div>
+              <div><label>Permanent Address</label><input type="text" value="San Jose, California, USA" class="custom-input"></div>
+              <div><label>City</label><input type="text" value="San Jose" class="custom-input"></div>
+              <div><label>Postal Code</label><input type="text" value="45962" class="custom-input"></div>
+              <div><label>Country</label><input type="text" value="USA" class="custom-input"></div>
+            </div>
+            <div class="flex justify-end mt-12">
+              <button type="submit" class="bg-[#1814F3] text-white px-20 py-3.5 rounded-[15px] font-semibold text-lg hover:opacity-90 transition-all shadow-md">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
