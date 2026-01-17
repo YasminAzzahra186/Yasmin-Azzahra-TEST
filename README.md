@@ -1,6 +1,6 @@
 # BankDash - Credit Card Management Dashboard
 
-BankDash adalah antarmuka dashboard perbankan modern yang dirancang untuk membantu pengguna mengelola kartu kredit mereka dengan mudah. Proyek ini berfokus pada pengalaman pengguna (UX) yang bersih, responsif, dan interaktif.
+BankDash adalah antarmuka dashboard perbankan modern yang dirancang untuk membantu pengguna mengelola kartu kredit mereka dengan mudah. Proyek ini berfokus pada pengalaman pengguna (UX) yang responsif, dan interaktif.
 
 * **Responsive Design**: Tampilan yang optimal di berbagai perangkat, mulai dari ponsel, tablet, hingga desktop.
 * **Interactive Sidebar**: Menu navigasi samping yang dapat dibuka-tutup (hamburger menu) pada tampilan mobile.
