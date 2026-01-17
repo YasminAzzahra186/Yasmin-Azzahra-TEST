@@ -10,6 +10,7 @@
   
   <style>
     body { font-family: 'Inter', sans-serif; color: #343C6A; }
+    html { scroll-behavior: smooth; }
     
     .logo-font { 
       font-family: 'Montserrat', sans-serif; 
@@ -17,14 +18,34 @@
       font-style: normal !important;
     }
 
-    /* SIDEBAR STYLES - FIXED ALIGNMENT */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .animate-scaleIn { animation: scaleIn 0.3s ease-out forwards; }
+
+    .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+
+    .btn-hover { transition: all 0.3s ease; }
+    .btn-hover:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(24, 20, 243, 0.3); }
+    .btn-hover:active { transform: scale(0.98); }
+
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1); }
+
     .sidebar-active { 
       color: #1814F3 !important; 
       background: linear-gradient(90deg, #F5F7FA 0%, rgba(245, 247, 250, 0) 100%); 
       position: relative;
     }
 
-    /* Indikator batang biru melengkung di sisi kiri sesuai desain figma */
     .sidebar-active::before {
       content: "";
       position: absolute;
@@ -49,7 +70,14 @@
 
     nav a:hover { color: #1814F3 !important; }
 
-    /* Custom Input Style */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
     .custom-input {
       border: 1px solid #DFEAF2;
       border-radius: 15px;
@@ -71,14 +99,23 @@
       font-weight: 400;
     }
 
-    /* EXPLODED DONUT CHART */
-    .chart-container { position: relative; width: 140px; height: 140px; }
-    .segment { position: absolute; width: 70px; height: 70px; transition: all 0.3s ease; }
+    .chart-container { position: relative; width: 140px; height: 140px; transition: all 0.3s ease; }
+    .segment { position: absolute; width: 70px; height: 70px; transition: all 0.3s ease; cursor: pointer; }
     
     .seg-blue   { background-color: #4C49ED; top: 0; left: 0; border-radius: 100% 0 0 0; transform: translate(-6px, -6px); } 
     .seg-teal   { background-color: #16DBCC; top: 0; right: 0; border-radius: 0 100% 0 0; transform: translate(6px, -6px); } 
     .seg-pink   { background-color: #FF82AC; bottom: 0; right: 0; border-radius: 0 0 100% 0; transform: translate(6px, 6px); } 
-    .seg-yellow { background-color: #FFBB38; bottom: 0; left: 0; border-radius: 0 0 0 100%; transform: translate(-6px, 6px); } 
+    .seg-yellow { background-color: #FFBB38; bottom: 0; left: 0; border-radius: 0 0 0 100%; transform: translate(-6px, 6px); }
+
+    .segment:hover { 
+      filter: brightness(1.15);
+      transform: scale(1.1) !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .chart-container:hover {
+      filter: drop-shadow(0 4px 15px rgba(24, 20, 243, 0.15));
+    }
 
     .chart-center-hole {
       position: absolute;
@@ -89,222 +126,366 @@
       background: white;
       border-radius: 50%;
       z-index: 10;
+      transition: all 0.3s ease;
     }
 
-    /* Card Gradients */
+    .chart-container:hover .chart-center-hole {
+      box-shadow: 0 0 15px rgba(24, 20, 243, 0.2);
+    }
+
     .card-blue { background: linear-gradient(107deg, #4C49ED 2.61%, #0A06F4 101.2%); }
     .card-indigo { background: linear-gradient(107deg, #2D60FF 2.61%, #539BFF 101.2%); }
+
+    .legend-item {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 4px 8px;
+      margin: -4px -8px;
+    }
+
+    .legend-item:hover {
+      background-color: rgba(24, 20, 243, 0.08);
+      transform: translateX(4px);
+    }
+
+    .legend-item span:first-child {
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .legend-item:hover span:first-child {
+      transform: scale(1.3);
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    .card-stats-container {
+      transition: all 0.3s ease;
+    }
+
+    .card-stats-container:hover {
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body class="bg-[#F5F7FA] flex min-h-screen">
 
-  <aside class="w-[250px] bg-white border-r border-[#E6EFF5] hidden lg:block sticky top-0 h-screen shrink-0">
-    <div class="p-8 mb-4">
-      <div class="flex items-center gap-3 text-2xl logo-font">
-        <img src="src/assets/icon.png" class="w-8 h-8" alt="logo">
+  <aside class="w-[200px] xl:w-[250px] bg-white border-r border-[#E6EFF5] hidden lg:block sticky top-0 h-screen shrink-0">
+    <div class="p-6 xl:p-8 mb-4">
+      <div class="flex items-center gap-2 xl:gap-3 text-xl xl:text-2xl logo-font">
+        <img src="src/assets/icon.png" class="w-7 xl:w-8 h-7 xl:h-8" alt="logo">
         BankDash.
       </div>
     </div>
     <nav class="flex flex-col text-[#B1B1B1]">
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/dashboard.png" class="w-6 h-6"> Dashboard</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/transfer.png" class="w-6 h-6"> Transactions</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/user.png" class="w-6 h-6"> Accounts</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/economic-investment.png" class="w-6 h-6"> Investments</a>
-      <a href="index.html" class="flex items-center gap-5 px-8 py-4 sidebar-active transition-all"><img src="src/assets/credit-card biru.png" class="w-6 h-6"> Credit Cards</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/loan.png" class="w-6 h-6"> Loans</a>
-      <a href="src/component/Services.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/service.png" class="w-6 h-6"> Services</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/econometrics.png" class="w-6 h-6"> My Privileges</a>
-      <a href="src/component/SettingPages1.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/settings solid.png" class="w-6 h-6"> Setting</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/dashboard.png" class="w-5 xl:w-6 h-5 xl:h-6"> Dashboard</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/transfer.png" class="w-5 xl:w-6 h-5 xl:h-6"> Transactions</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/user.png" class="w-5 xl:w-6 h-5 xl:h-6"> Accounts</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/economic-investment.png" class="w-5 xl:w-6 h-5 xl:h-6"> Investments</a>
+      <a href="index.html" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 sidebar-active transition-all"><img src="src/assets/credit-card biru.png" class="w-5 xl:w-6 h-5 xl:h-6"> Credit Cards</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/loan.png" class="w-5 xl:w-6 h-5 xl:h-6"> Loans</a>
+      <a href="src/component/Services.html" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/service.png" class="w-5 xl:w-6 h-5 xl:h-6"> Services</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/econometrics.png" class="w-5 xl:w-6 h-5 xl:h-6"> My Privileges</a>
+      <a href="src/component/SettingPages1.html" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/settings solid.png" class="w-5 xl:w-6 h-5 xl:h-6"> Setting</a>
     </nav>
   </aside>
 
+  <div id="mobileSidebar" class="fixed inset-0 bg-black/50 z-50 lg:hidden hidden">
+    <aside class="w-[250px] bg-white h-full" onclick="event.stopPropagation()">
+      <div class="p-6 mb-4 flex items-center justify-between">
+        <div class="flex items-center gap-3 text-2xl logo-font">
+          <img src="src/assets/icon.png" class="w-8 h-8" alt="logo">
+          BankDash.
+        </div>
+        <button onclick="toggleMobileMenu()" class="p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <nav class="flex flex-col text-[#B1B1B1]">
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/dashboard.png" class="w-6 h-6"> Dashboard</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/transfer.png" class="w-6 h-6"> Transactions</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/user.png" class="w-6 h-6"> Accounts</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/economic-investment.png" class="w-6 h-6"> Investments</a>
+        <a href="index.html" class="flex items-center gap-5 px-8 py-4 sidebar-active transition-all"><img src="src/assets/credit-card biru.png" class="w-6 h-6"> Credit Cards</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/loan.png" class="w-6 h-6"> Loans</a>
+        <a href="src/component/Services.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/service.png" class="w-6 h-6"> Services</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/econometrics.png" class="w-6 h-6"> My Privileges</a>
+        <a href="src/component/SettingPages1.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="src/assets/settings solid.png" class="w-6 h-6"> Setting</a>
+      </nav>
+    </aside>
+  </div>
+
   <main class="flex-1 overflow-y-auto flex flex-col">
-    <header class="bg-white px-8 py-5 flex justify-between items-center border-b border-[#E6EFF5] sticky top-0 z-10">
-      <h1 class="text-2xl font-semibold text-[#343C6A]">Credit Cards</h1>
-      <div class="flex items-center gap-6">
-        <div class="relative hidden md:block">
+    <header class="bg-white px-4 md:px-8 py-5 flex justify-between items-center border-b border-[#E6EFF5] sticky top-0 z-10">
+      <div class="flex items-center gap-3 flex-1 lg:flex-none">
+        <button onclick="toggleMobileMenu()" class="lg:hidden p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="text-xl md:text-2xl font-semibold text-[#343C6A] text-center lg:text-left">Credit Cards</h1>
+      </div>
+      <div class="flex items-center gap-3 md:gap-6">
+        <div class="relative hidden lg:block">
           <img src="src/assets/search.png" alt="Search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-50 w-5">
           <input type="text" placeholder="Search for something" class="bg-[#F5F7FA] pl-12 pr-6 py-3 rounded-full w-[280px] text-sm focus:outline-none">
         </div>
-        <div class="flex gap-4">
-          <button class="w-12 h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center"><img src="src/assets/settings.png" class="w-6 h-6"></button>
-          <button class="w-12 h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center"><img src="src/assets/notification.png" class="w-6 h-6"></button>
-          <img src="src/assets/Mask Group.png" class="w-12 h-12 rounded-full object-cover" alt="Profile">
+        <div class="flex gap-2 md:gap-4">
+          <a href="src/component/SettingPages1.html" class="w-10 h-10 md:w-12 md:h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center hover:bg-[#E7EDFF] transition-all" title="Settings"><img src="src/assets/settings.png" class="w-5 h-5 md:w-6 md:h-6"></a>
+          <button class="w-10 h-10 md:w-12 md:h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center hover:bg-[#E7EDFF] transition-all" title="Notifications"><img src="src/assets/notification.png" class="w-5 h-5 md:w-6 md:h-6"></button>
+          <a href="src/component/SettingPages1.html" title="Profile"><img src="src/assets/Mask Group.png" class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover hover:ring-2 hover:ring-[#1814F3] transition-all cursor-pointer" alt="Profile"></a>
         </div>
       </div>
     </header>
 
-    <div class="p-8 w-full flex-1 space-y-8">
+    <div class="bg-white px-4 py-4 border-b border-[#E6EFF5] lg:hidden">
+      <div class="relative w-full">
+        <img src="src/assets/search.png" alt="Search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-50 w-5">
+        <input type="text" placeholder="Search for something" class="bg-[#F5F7FA] pl-12 pr-6 py-3 rounded-full w-full text-sm focus:outline-none">
+      </div>
+    </div>
+
+    <div class="p-4 md:p-8 w-full flex-1 space-y-6 md:space-y-8">
       
       <section>
         <h2 class="text-xl font-semibold mb-5 text-[#343C6A]">My Cards</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          <div class="card-indigo rounded-[25px] p-6 text-white h-[235px] flex flex-col justify-between shadow-sm">
+        <div class="flex lg:grid lg:grid-cols-3 gap-4 md:gap-6 lg:gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 scrollbar-hide">
+          <div class="min-w-[265px] sm:min-w-[265px] lg:min-w-0 lg:w-[231px] xl:min-w-[350px] card-indigo rounded-[25px] p-4 lg:p-4 xl:p-6 text-white h-[170px] lg:h-[170px] xl:h-[225px] flex flex-col justify-between shadow-sm hover-lift cursor-pointer shrink-0 lg:shrink">
             <div class="flex justify-between items-start">
-              <div><p class="text-xs opacity-70">Balance</p><p class="text-xl font-semibold">$5,756</p></div>
-              <img src="src/assets/Chip_Card.png" alt="chip">
+              <div><p class="text-[10px] lg:text-[10px] xl:text-xs opacity-70">Balance</p><p class="text-base lg:text-base xl:text-xl font-semibold">$5,756</p></div>
+              <img src="src/assets/Chip_Card.png" alt="chip" class="w-8 lg:w-8 xl:w-auto">
             </div>
-            <div class="flex gap-10">
-              <div><p class="text-[10px] opacity-70 uppercase tracking-widest">Card Holder</p><p class="text-sm">Eddy Cusuma</p></div>
-              <div><p class="text-[10px] opacity-70 uppercase tracking-widest">Valid Thru</p><p class="text-sm">12/22</p></div>
+            <div class="flex gap-6 lg:gap-6 xl:gap-10">
+              <div><p class="text-[9px] lg:text-[9px] xl:text-[10px] opacity-70 uppercase tracking-widest">Card Holder</p><p class="text-[11px] lg:text-[11px] xl:text-sm">Eddy Cusuma</p></div>
+              <div><p class="text-[9px] lg:text-[9px] xl:text-[10px] opacity-70 uppercase tracking-widest">Valid Thru</p><p class="text-[11px] lg:text-[11px] xl:text-sm">12/22</p></div>
             </div>
-            <div class="flex justify-between items-center pt-4 border-t border-white/20 text-xl tracking-[3px]">
+            <div class="flex justify-between items-center pt-2 lg:pt-2 xl:pt-4 border-t border-white/20 text-xs lg:text-xs xl:text-xl tracking-[1px] lg:tracking-[1px] xl:tracking-[3px] whitespace-nowrap">
               3778 **** **** 1234
-              <img src="src/assets/lingkaran.png" alt="logo">
+              <img src="src/assets/lingkaran.png" alt="logo" class="w-6 lg:w-6 xl:w-auto">
             </div>
           </div>
 
-          <div class="card-blue rounded-[25px] p-6 text-white h-[235px] flex flex-col justify-between shadow-lg">
+          <div class="min-w-[265px] sm:min-w-[265px] lg:min-w-0 lg:w-[231px] xl:min-w-[350px] card-blue rounded-[25px] p-4 lg:p-4 xl:p-6 text-white h-[170px] lg:h-[170px] xl:h-[225px] flex flex-col justify-between shadow-lg hover-lift cursor-pointer shrink-0 lg:shrink">
             <div class="flex justify-between items-start">
-              <div><p class="text-xs opacity-70">Balance</p><p class="text-xl font-semibold">$5,756</p></div>
-              <img src="src/assets/Chip_Card.png" alt="chip">
+              <div><p class="text-[10px] lg:text-[10px] xl:text-xs opacity-70">Balance</p><p class="text-base lg:text-base xl:text-xl font-semibold">$5,756</p></div>
+              <img src="src/assets/Chip_Card.png" alt="chip" class="w-8 lg:w-8 xl:w-auto">
             </div>
-            <div class="flex gap-10">
-              <div><p class="text-[10px] opacity-70 uppercase tracking-widest">Card Holder</p><p class="text-sm">Eddy Cusuma</p></div>
-              <div><p class="text-[10px] opacity-70 uppercase tracking-widest">Valid Thru</p><p class="text-sm">12/22</p></div>
+            <div class="flex gap-6 lg:gap-6 xl:gap-10">
+              <div><p class="text-[9px] lg:text-[9px] xl:text-[10px] opacity-70 uppercase tracking-widest">Card Holder</p><p class="text-[11px] lg:text-[11px] xl:text-sm">Eddy Cusuma</p></div>
+              <div><p class="text-[9px] lg:text-[9px] xl:text-[10px] opacity-70 uppercase tracking-widest">Valid Thru</p><p class="text-[11px] lg:text-[11px] xl:text-sm">12/22</p></div>
             </div>
-            <div class="flex justify-between items-center pt-4 border-t border-white/20 text-xl tracking-[3px]">
+            <div class="flex justify-between items-center pt-2 lg:pt-2 xl:pt-4 border-t border-white/20 text-xs lg:text-xs xl:text-xl tracking-[1px] lg:tracking-[1px] xl:tracking-[3px] whitespace-nowrap">
               3778 **** **** 1234
-              <img src="src/assets/lingkaran.png" alt="logo">
+              <img src="src/assets/lingkaran.png" alt="logo" class="w-6 lg:w-6 xl:w-auto">
             </div>
           </div>
 
-          <div class="bg-white border border-[#DFEAF2] rounded-[25px] p-6 h-[235px] flex flex-col justify-between">
+          <div class="min-w-[265px] sm:min-w-[265px] lg:min-w-0 lg:w-[231px] xl:min-w-[350px] bg-white border border-[#DFEAF2] rounded-[25px] p-4 lg:p-4 xl:p-6 h-[170px] lg:h-[170px] xl:h-[225px] flex flex-col justify-between hover-lift cursor-pointer shrink-0 lg:shrink">
             <div class="flex justify-between items-start">
-              <div><p class="text-xs text-[#718EBF]">Balance</p><p class="text-xl font-semibold text-[#343C6A]">$5,756</p></div>
-              <img src="src/assets/Chip_Card abu.png" alt="chip">
+              <div><p class="text-[10px] lg:text-[10px] xl:text-xs text-[#718EBF]">Balance</p><p class="text-base lg:text-base xl:text-xl font-semibold text-[#343C6A]">$5,756</p></div>
+              <img src="src/assets/Chip_Card abu.png" alt="chip" class="w-8 lg:w-8 xl:w-auto">
             </div>
-            <div class="flex gap-10">
-              <div><p class="text-[10px] text-[#718EBF] uppercase tracking-widest">Card Holder</p><p class="text-sm text-[#343C6A]">Eddy Cusuma</p></div>
-              <div><p class="text-[10px] text-[#718EBF] uppercase tracking-widest">Valid Thru</p><p class="text-sm text-[#343C6A]">12/22</p></div>
+            <div class="flex gap-6 lg:gap-6 xl:gap-10">
+              <div><p class="text-[9px] lg:text-[9px] xl:text-[10px] text-[#718EBF] uppercase tracking-widest">Card Holder</p><p class="text-[11px] lg:text-[11px] xl:text-sm text-[#343C6A]">Eddy Cusuma</p></div>
+              <div><p class="text-[9px] lg:text-[9px] xl:text-[10px] text-[#718EBF] uppercase tracking-widest">Valid Thru</p><p class="text-[11px] lg:text-[11px] xl:text-sm text-[#343C6A]">12/22</p></div>
             </div>
-            <div class="flex justify-between items-center pt-4 border-t border-[#DFEAF2] text-xl tracking-[3px] text-[#343C6A]">
+            <div class="flex justify-between items-center pt-2 lg:pt-2 xl:pt-4 border-t border-[#DFEAF2] text-xs lg:text-xs xl:text-xl tracking-[1px] lg:tracking-[1px] xl:tracking-[3px] whitespace-nowrap text-[#343C6A]">
               3778 **** **** 1234
-              <img src="src/assets/lingkaran abu.png" alt="logo">
+              <img src="src/assets/lingkaran abu.png" alt="logo" class="w-6 lg:w-6 xl:w-auto">
             </div>
           </div>
         </div>
       </section>
 
-      <div class="grid grid-cols-12 gap-8 items-stretch">
+      <div class="grid grid-cols-12 gap-6 lg:gap-8 items-stretch">
         
-        <div class="col-span-12 lg:col-span-4 xl:col-span-3 flex flex-col">
-          <h2 class="text-xl font-semibold mb-5 text-[#343C6A]">Card Expense Statistics</h2>
-          <div class="bg-white p-8 rounded-[25px] flex-1 flex flex-col items-center justify-center shadow-sm min-h-[300px]">
+        <div class="col-span-12 lg:col-span-4 xl:col-span-4 flex flex-col">
+          <h2 class="text-xl font-semibold mb-5 text-[#343C6A] whitespace-nowrap">Card Expense Statistics</h2>
+          <div class="bg-white p-6 lg:p-8 rounded-[25px] flex-1 flex flex-col items-center justify-center shadow-sm card-stats-container hover-lift">
             <div class="chart-container mb-6">
-              <div class="segment seg-blue"></div>
-              <div class="segment seg-teal"></div>
-              <div class="segment seg-pink"></div>
-              <div class="segment seg-yellow"></div>
+              <div class="segment seg-blue" data-segment="blue"></div>
+              <div class="segment seg-teal" data-segment="teal"></div>
+              <div class="segment seg-pink" data-segment="pink"></div>
+              <div class="segment seg-yellow" data-segment="yellow"></div>
               <div class="chart-center-hole"></div>
             </div>
             <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-[12px]">
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#4C49ED]"></span><span class="text-[#718EBF] font-medium">DBL Bank</span></div>
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#FF82AC]"></span><span class="text-[#718EBF] font-medium">BRC Bank</span></div>
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#16DBCC]"></span><span class="text-[#718EBF] font-medium">ABM Bank</span></div>
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#FFBB38]"></span><span class="text-[#718EBF] font-medium">MCP Bank</span></div>
+              <div class="legend-item flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#4C49ED]"></span><span class="text-[#718EBF] font-medium">DBL Bank</span></div>
+              <div class="legend-item flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#FF82AC]"></span><span class="text-[#718EBF] font-medium">BRC Bank</span></div>
+              <div class="legend-item flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#16DBCC]"></span><span class="text-[#718EBF] font-medium">ABM Bank</span></div>
+              <div class="legend-item flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#FFBB38]"></span><span class="text-[#718EBF] font-medium">MCP Bank</span></div>
             </div>
           </div>
         </div>
 
-        <div class="col-span-12 lg:col-span-8 xl:col-span-9 flex flex-col">
+        <div class="col-span-12 lg:col-span-8 xl:col-span-8 flex flex-col">
           <h2 class="text-xl font-semibold mb-5 text-[#343C6A]">Card List</h2>
           <div class="flex-1 flex flex-col gap-y-4">
-            <div class="bg-white px-8 py-5 rounded-[20px] flex items-center justify-between shadow-sm border border-transparent hover:border-blue-100 transition-all">
-              <div class="flex items-center gap-5 min-w-[160px]">
-                <div class="w-12 h-12 bg-[#E7EDFF] rounded-2xl flex items-center justify-center shrink-0">
-                  <img src="src/assets/credit-card biru.png" alt="" class="w-6 h-6">
-                </div>
-                <div><p class="text-sm font-bold text-[#343C6A]">Card Type</p><p class="text-xs text-[#718EBF]">Secondary</p></div>
+            <div class="bg-white px-4 lg:px-4 xl:px-8 py-4 lg:py-4 xl:py-5 rounded-[20px] flex items-center gap-4 lg:gap-2 xl:gap-8 shadow-sm border border-transparent hover:border-blue-100 transition-all">
+              <div class="w-12 h-12 lg:w-12 xl:w-14 lg:h-12 xl:h-14 bg-[#E7EDFF] rounded-2xl flex items-center justify-center shrink-0">
+                <img src="src/assets/credit-card biru.png" alt="" class="w-6 h-6 lg:w-6 xl:w-7 lg:h-6 xl:h-7">
               </div>
-              <div class="min-w-[120px]"><p class="text-sm font-bold text-[#343C6A]">Bank</p><p class="text-xs text-[#718EBF]">DBL Bank</p></div>
-              <div class="hidden md:block min-w-[180px] text-center"><p class="text-sm font-bold text-[#343C6A]">Card Number</p><p class="text-xs text-[#718EBF]">**** **** 5600</p></div>
-              <div class="hidden md:block min-w-[140px] text-right"><p class="text-sm font-bold text-[#343C6A]">Namain Card</p><p class="text-xs text-[#718EBF]">William</p></div>
-              <button class="text-[#1814F3] text-sm font-bold hover:underline ml-4">View Details</button>
+              <div class="flex-1 min-w-0 lg:min-w-[65px] xl:min-w-0">
+                <p class="text-sm font-semibold text-[#343C6A]">Card Type</p>
+                <p class="text-xs text-[#718EBF]">Secondary</p>
+              </div>
+              <div class="min-w-[70px] lg:min-w-[55px] xl:min-w-[80px]">
+                <p class="text-sm font-semibold text-[#343C6A]">Bank</p>
+                <p class="text-xs text-[#718EBF]">DBL Bank</p>
+              </div>
+              <div class="hidden lg:block min-w-[75px] xl:min-w-[100px]">
+                <p class="text-sm font-semibold text-[#343C6A]">Card Number</p>
+                <p class="text-xs text-[#718EBF]">**** **** 5600</p>
+              </div>
+              <div class="hidden lg:block min-w-[65px] xl:min-w-[90px]">
+                <p class="text-sm font-semibold text-[#343C6A]">Namain Card</p>
+                <p class="text-xs text-[#718EBF]">William</p>
+              </div>
+              <button class="text-[#1814F3] text-xs lg:text-sm font-bold hover:underline whitespace-nowrap shrink-0">View Details</button>
             </div>
-            <div class="bg-white px-8 py-5 rounded-[20px] flex items-center justify-between shadow-sm border border-transparent transition-all">
-              <div class="flex items-center gap-5 min-w-[160px]">
-                <div class="w-12 h-12 bg-[#FFE0EB] rounded-2xl flex items-center justify-center shrink-0">
-                  <img src="src/assets/credit-card pink.png" alt="" class="w-6 h-6">
-                </div>
-                <div><p class="text-sm font-bold text-[#343C6A]">Card Type</p><p class="text-xs text-[#718EBF]">Secondary</p></div>
+            <div class="bg-white px-4 lg:px-4 xl:px-8 py-4 lg:py-4 xl:py-5 rounded-[20px] flex items-center gap-4 lg:gap-2 xl:gap-8 shadow-sm border border-transparent hover:border-blue-100 transition-all">
+              <div class="w-12 h-12 lg:w-12 xl:w-14 lg:h-12 xl:h-14 bg-[#FFE0EB] rounded-2xl flex items-center justify-center shrink-0">
+                <img src="src/assets/credit-card pink.png" alt="" class="w-6 h-6 lg:w-6 xl:w-7 lg:h-6 xl:h-7">
               </div>
-              <div class="min-w-[120px]"><p class="text-sm font-bold text-[#343C6A]">Bank</p><p class="text-xs text-[#718EBF]">BRC Bank</p></div>
-              <div class="hidden md:block min-w-[180px] text-center"><p class="text-sm font-bold text-[#343C6A]">Card Number</p><p class="text-xs text-[#718EBF]">**** **** 4300</p></div>
-              <div class="hidden md:block min-w-[140px] text-right"><p class="text-sm font-bold text-[#343C6A]">Namain Card</p><p class="text-xs text-[#718EBF]">Michel</p></div>
-              <button class="text-[#1814F3] text-sm font-bold hover:underline ml-4">View Details</button>
+              <div class="flex-1 min-w-0 lg:min-w-[65px] xl:min-w-0">
+                <p class="text-sm font-semibold text-[#343C6A]">Card Type</p>
+                <p class="text-xs text-[#718EBF]">Secondary</p>
+              </div>
+              <div class="min-w-[70px] lg:min-w-[55px] xl:min-w-[80px]">
+                <p class="text-sm font-semibold text-[#343C6A]">Bank</p>
+                <p class="text-xs text-[#718EBF]">BRC Bank</p>
+              </div>
+              <div class="hidden lg:block min-w-[75px] xl:min-w-[100px]">
+                <p class="text-sm font-semibold text-[#343C6A]">Card Number</p>
+                <p class="text-xs text-[#718EBF]">**** **** 4300</p>
+              </div>
+              <div class="hidden lg:block min-w-[65px] xl:min-w-[90px]">
+                <p class="text-sm font-semibold text-[#343C6A]">Namain Card</p>
+                <p class="text-xs text-[#718EBF]">Michel</p>
+              </div>
+              <button class="text-[#1814F3] text-xs lg:text-sm font-bold hover:underline whitespace-nowrap shrink-0">View Details</button>
             </div>
-            <div class="bg-white px-8 py-5 rounded-[20px] flex items-center justify-between shadow-sm border border-transparent transition-all">
-              <div class="flex items-center gap-5 min-w-[160px]">
-                <div class="w-12 h-12 bg-[#FFF5D9] rounded-2xl flex items-center justify-center shrink-0">
-                  <img src="src/assets/credit-card kuning.png" alt="" class="w-6 h-6">
-                </div>
-                <div><p class="text-sm font-bold text-[#343C6A]">Card Type</p><p class="text-xs text-[#718EBF]">Secondary</p></div>
+            <div class="bg-white px-4 lg:px-4 xl:px-8 py-4 lg:py-4 xl:py-5 rounded-[20px] flex items-center gap-4 lg:gap-2 xl:gap-8 shadow-sm border border-transparent hover:border-blue-100 transition-all">
+              <div class="w-12 h-12 lg:w-12 xl:w-14 lg:h-12 xl:h-14 bg-[#FFF5D9] rounded-2xl flex items-center justify-center shrink-0">
+                <img src="src/assets/credit-card kuning.png" alt="" class="w-6 h-6 lg:w-6 xl:w-7 lg:h-6 xl:h-7">
               </div>
-              <div class="min-w-[120px]"><p class="text-sm font-bold text-[#343C6A]">Bank</p><p class="text-xs text-[#718EBF]">ABM Bank</p></div>
-              <div class="hidden md:block min-w-[180px] text-center"><p class="text-sm font-bold text-[#343C6A]">Card Number</p><p class="text-xs text-[#718EBF]">**** **** 7560</p></div>
-              <div class="hidden md:block min-w-[140px] text-right"><p class="text-sm font-bold text-[#343C6A]">Namain Card</p><p class="text-xs text-[#718EBF]">Edward</p></div>
-              <button class="text-[#1814F3] text-sm font-bold hover:underline ml-4">View Details</button>
+              <div class="flex-1 min-w-0 lg:min-w-[65px] xl:min-w-0">
+                <p class="text-sm font-semibold text-[#343C6A]">Card Type</p>
+                <p class="text-xs text-[#718EBF]">Secondary</p>
+              </div>
+              <div class="min-w-[70px] lg:min-w-[55px] xl:min-w-[80px]">
+                <p class="text-sm font-semibold text-[#343C6A]">Bank</p>
+                <p class="text-xs text-[#718EBF]">ABM Bank</p>
+              </div>
+              <div class="hidden lg:block min-w-[75px] xl:min-w-[100px]">
+                <p class="text-sm font-semibold text-[#343C6A]">Card Number</p>
+                <p class="text-xs text-[#718EBF]">**** **** 7560</p>
+              </div>
+              <div class="hidden lg:block min-w-[65px] xl:min-w-[90px]">
+                <p class="text-sm font-semibold text-[#343C6A]">Namain Card</p>
+                <p class="text-xs text-[#718EBF]">Edward</p>
+              </div>
+              <button class="text-[#1814F3] text-xs lg:text-sm font-bold hover:underline whitespace-nowrap shrink-0">View Details</button>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="p-8 w-full space-y-10">
-      
-      <div class="grid grid-cols-12 gap-8 items-stretch">
+      <div class="grid grid-cols-1 lg:grid-cols-5 xl:grid-cols-3 gap-6 md:gap-8 mt-8">
         
-        <div class="col-span-12 lg:col-span-8 flex flex-col">
+        <div class="lg:col-span-3 xl:col-span-2 flex flex-col">
           <h2 class="text-xl font-semibold mb-5 text-[#343C6A]">Add New Card</h2>
-          <div class="bg-white p-8 md:p-10 rounded-[25px] shadow-sm flex-1">
-            <p class="text-[#718EBF] text-[15px] mb-8 leading-relaxed">Credit Card generally means a plastic card issued by Scheduled Commercial Banks assigned to a Cardholder, with a credit limit, that can be used to purchase goods and services on credit or obtain cash advances.</p>
-            <form class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-              <div><label>Card Type</label><input type="text" value="Classic" class="custom-input"></div>
-              <div><label>Name On Card</label><input type="text" placeholder="My Cards" class="custom-input"></div>
-              <div><label>Card Number</label><input type="text" placeholder="**** **** **** ****" class="custom-input"></div>
-              <div><label>Expiration Date</label><input type="text" value="25 January 2026" class="custom-input"></div>
-              <div class="md:col-span-2 mt-4">
-                <button type="button" class="bg-[#1814F3] text-white py-4 px-12 rounded-[15px] font-bold hover:opacity-90 transition-all shadow-md">Add Card</button>
+          <div class="bg-white p-6 md:p-6 lg:p-5 xl:p-10 rounded-[25px] shadow-sm flex-1">
+            <p class="text-[#718EBF] text-sm md:text-[15px] mb-4 md:mb-4 lg:mb-4 xl:mb-8 leading-relaxed">Credit Card generally means a plastic card issued by Scheduled Commercial Banks assigned to a Cardholder, with a credit limit, that can be used to purchase goods and services on credit or obtain cash advances.</p>
+            <form class="grid grid-cols-1 md:grid-cols-2 gap-x-4 md:gap-x-4 lg:gap-x-4 xl:gap-x-8 gap-y-3 md:gap-y-4 lg:gap-y-3 xl:gap-y-6">
+              <div>
+                <label class="text-sm md:text-base">Card Type</label>
+                <input type="text" value="Classic" class="custom-input">
+              </div>
+              <div>
+                <label class="text-sm md:text-base">Name On Card</label>
+                <input type="text" placeholder="My Cards" class="custom-input">
+              </div>
+              <div>
+                <label class="text-sm md:text-base">Card Number</label>
+                <input type="text" placeholder="**** **** **** ****" class="custom-input">
+              </div>
+              <div>
+                <label class="text-sm md:text-base">Expiration Date</label>
+                <input type="text" value="25 January 2026" class="custom-input">
+              </div>
+              <div class="md:col-span-2 mt-1 md:mt-1 lg:mt-1 xl:mt-4">
+                <button type="button" class="bg-[#1814F3] text-white py-3 md:py-3 xl:py-4 px-10 md:px-10 xl:px-12 rounded-[15px] font-bold hover:opacity-90 transition-all shadow-md w-full sm:w-auto btn-hover">Add Card</button>
               </div>
             </form>
           </div>
         </div>
 
-        <div class="col-span-12 lg:col-span-4 flex flex-col">
+        <div class="lg:col-span-2 xl:col-span-1 flex flex-col">
           <h2 class="text-xl font-semibold mb-5 text-[#343C6A]">Card Setting</h2>
-          <div class="bg-white p-8 md:p-10 rounded-[25px] shadow-sm h-full flex flex-col justify-between">
+          <div class="bg-white p-6 md:p-6 lg:p-6 xl:p-10 rounded-[25px] shadow-sm h-full flex flex-col justify-start gap-4 md:gap-5 lg:gap-4 xl:gap-4">
             
-            <div class="flex items-center gap-5 cursor-pointer hover:bg-gray-50 p-1 rounded-xl transition-all">
-              <div class="w-12 h-12 bg-[#FFF5D9] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/block-credit-card.png" class="w-6 h-6"></div>
-              <div><p class="font-bold text-sm text-[#343C6A]">Block Card</p><p class="text-[11px] text-[#718EBF]">Instantly block your card</p></div>
+            <div class="flex items-center gap-4 md:gap-5 lg:gap-4 cursor-pointer hover:bg-gray-50 p-3 md:p-3 lg:p-2 rounded-xl transition-all">
+              <div class="w-12 h-12 md:w-14 md:h-14 lg:w-12 lg:h-12 xl:w-16 xl:h-16 bg-[#FFF5D9] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/block-credit-card.png" class="w-6 h-6 md:w-7 md:h-7 lg:w-6 lg:h-6 xl:w-8 xl:h-8"></div>
+              <div class="min-w-0 flex-1"><p class="font-bold text-sm md:text-base lg:text-sm xl:text-[15px] text-[#343C6A]">Block Card</p><p class="text-[11px] md:text-xs lg:text-xs xl:text-[13px] text-[#718EBF]">Instantly block your card</p></div>
             </div>
 
-            <div class="flex items-center gap-5 cursor-pointer hover:bg-gray-50 p-1 rounded-xl transition-all">
-              <div class="w-12 h-12 bg-[#E7EDFF] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/padlock.png" class="w-6 h-6"></div>
-              <div><p class="font-bold text-sm text-[#343C6A]">Change Pin Code</p><p class="text-[11px] text-[#718EBF]">Choose another pin code</p></div>
+            <div class="flex items-center gap-4 md:gap-5 lg:gap-4 cursor-pointer hover:bg-gray-50 p-3 md:p-3 lg:p-2 rounded-xl transition-all">
+              <div class="w-12 h-12 md:w-14 md:h-14 lg:w-12 lg:h-12 xl:w-16 xl:h-16 bg-[#E7EDFF] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/padlock.png" class="w-6 h-6 md:w-7 md:h-7 lg:w-6 lg:h-6 xl:w-8 xl:h-8"></div>
+              <div class="min-w-0 flex-1"><p class="font-bold text-sm md:text-base lg:text-sm xl:text-[15px] text-[#343C6A]">Change Pin Code</p><p class="text-[11px] md:text-xs lg:text-xs xl:text-[13px] text-[#718EBF]">Withdraw without any card</p></div>
             </div>
 
-            <div class="flex items-center gap-5 cursor-pointer hover:bg-gray-50 p-1 rounded-xl transition-all">
-              <div class="w-12 h-12 bg-[#FFE0EB] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/google.png" class="w-6 h-6"></div>
-              <div><p class="font-bold text-sm text-[#343C6A]">Add to Google Pay</p><p class="text-[11px] text-[#718EBF]">Withdraw without any card</p></div>
+            <div class="flex items-center gap-4 md:gap-5 lg:gap-4 cursor-pointer hover:bg-gray-50 p-3 md:p-3 lg:p-2 rounded-xl transition-all">
+              <div class="w-12 h-12 md:w-14 md:h-14 lg:w-12 lg:h-12 xl:w-16 xl:h-16 bg-[#FFE0EB] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/google.png" class="w-6 h-6 md:w-7 md:h-7 lg:w-6 lg:h-6 xl:w-8 xl:h-8"></div>
+              <div class="min-w-0 flex-1"><p class="font-bold text-sm md:text-base lg:text-sm xl:text-[15px] text-[#343C6A]">Add to Google Pay</p><p class="text-[11px] md:text-xs lg:text-xs xl:text-[13px] text-[#718EBF]">Withdraw without any card</p></div>
             </div>
 
-            <div class="flex items-center gap-5 cursor-pointer hover:bg-gray-50 p-1 rounded-xl transition-all">
-              <div class="w-12 h-12 bg-[#DCFAF8] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/apple.png" class="w-6 h-6"></div>
-              <div><p class="font-bold text-sm text-[#343C6A]">Add to Apple Store</p><p class="text-[11px] text-[#718EBF]">Withdraw without any card</p></div>
+            <div class="flex items-center gap-4 md:gap-5 lg:gap-4 cursor-pointer hover:bg-gray-50 p-3 md:p-3 lg:p-2 rounded-xl transition-all">
+              <div class="w-12 h-12 md:w-14 md:h-14 lg:w-12 lg:h-12 xl:w-16 xl:h-16 bg-[#DCFAF8] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/apple.png" class="w-6 h-6 md:w-7 md:h-7 lg:w-6 lg:h-6 xl:w-8 xl:h-8"></div>
+              <div class="min-w-0 flex-1"><p class="font-bold text-sm md:text-base lg:text-sm xl:text-[15px] text-[#343C6A]">Add to Apple Pay</p><p class="text-[11px] md:text-xs lg:text-xs xl:text-[13px] text-[#718EBF]">Withdraw without any card</p></div>
             </div>
 
-            <div class="flex items-center gap-5 cursor-pointer hover:bg-gray-50 p-1 rounded-xl transition-all">
-              <div class="w-12 h-12 bg-[#DCFAF8] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/apple.png" class="w-6 h-6"></div>
-              <div><p class="font-bold text-sm text-[#343C6A]">Add to Apple Store</p><p class="text-[11px] text-[#718EBF]">Withdraw without any card</p></div>
+            <div class="flex items-center gap-4 md:gap-5 lg:gap-4 cursor-pointer hover:bg-gray-50 p-3 md:p-3 lg:p-2 rounded-xl transition-all">
+              <div class="w-12 h-12 md:w-14 md:h-14 lg:w-12 lg:h-12 xl:w-16 xl:h-16 bg-[#DCFAF8] rounded-2xl flex items-center justify-center shrink-0"><img src="src/assets/apple.png" class="w-6 h-6 md:w-7 md:h-7 lg:w-6 lg:h-6 xl:w-8 xl:h-8"></div>
+              <div class="min-w-0 flex-1"><p class="font-bold text-sm md:text-base lg:text-sm xl:text-[15px] text-[#343C6A]">Add to Apple Store</p><p class="text-[11px] md:text-xs lg:text-xs xl:text-[13px] text-[#718EBF]">Withdraw without any card</p></div>
             </div>
-
           </div>
         </div>
 
     </div>
   </main>
 
-  <script>lucide.createIcons();</script>
+  <script>
+    lucide.createIcons();
+
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mobileSidebar');
+      sidebar.classList.toggle('hidden');
+    }
+
+    document.getElementById('mobileSidebar').addEventListener('click', function(e) {
+      if (e.target === this) {
+        toggleMobileMenu();
+      }
+    });
+
+    const segments = document.querySelectorAll('.segment');
+    const legendItems = document.querySelectorAll('.legend-item');
+
+    legendItems.forEach((item, index) => {
+      const colorMap = ['blue', 'pink', 'teal', 'yellow'];
+      item.addEventListener('mouseenter', function() {
+        segments.forEach(seg => {
+          if (seg.dataset.segment !== colorMap[index]) {
+            seg.style.opacity = '0.4';
+          }
+        });
+      });
+      
+      item.addEventListener('mouseleave', function() {
+        segments.forEach(seg => {
+          seg.style.opacity = '1';
+        });
+      });
+    });
+  </script>
 </body>
 </html>

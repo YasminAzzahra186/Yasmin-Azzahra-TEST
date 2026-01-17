@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { 
   LayoutDashboard, 
@@ -12,10 +12,10 @@ import {
   Smartphone, 
   Apple, 
   Store, 
-  Lock
+  Lock,
+  Menu,
+  X
 } from 'lucide-react';
-
-// --- Interfaces (Definisi Tipe Data) ---
 
 interface SidebarItemProps {
   icon: LucideIcon;
@@ -41,8 +41,6 @@ interface CardSettingItem {
   desc: string;
 }
 
-// --- Komponen Pendukung dengan Type Safety ---
-
 const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, active = false }) => (
   <div className={`flex items-center gap-4 px-8 py-4 cursor-pointer transition-all ${
     active ? 'text-blue-600 border-l-4 border-blue-600 bg-blue-50/30' : 'text-gray-400 hover:text-blue-500'
@@ -53,7 +51,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, active = f
 );
 
 const CreditCardUI: React.FC<CreditCardUIProps> = ({ color, name, expiry, number }) => (
-  <div className={`min-w-[320px] p-6 rounded-[25px] text-white flex flex-col justify-between h-52 shadow-lg ${color}`}>
+  <div className={`min-w-[280px] sm:min-w-[320px] p-5 sm:p-6 rounded-[20px] sm:rounded-[25px] text-white flex flex-col justify-between h-48 sm:h-52 shadow-lg ${color}`}>
     <div className="flex justify-between items-start">
       <div>
         <p className="text-xs opacity-70 font-light">Balance</p>
@@ -85,9 +83,9 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
   <h2 className="text-xl font-semibold text-slate-800 mb-4">{title}</h2>
 );
 
-// --- Komponen Utama ---
-
 export default function BankDash() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const cardSettings: CardSettingItem[] = [
     { icon: Lock, bg: 'bg-yellow-50 text-yellow-500', title: 'Block Card', desc: 'Instantly block your card' },
     { icon: Smartphone, bg: 'bg-blue-50 text-blue-500', title: 'Change Pin Code', desc: 'Choose another pin code' },
@@ -97,7 +95,7 @@ export default function BankDash() {
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
-      {/* Sidebar */}
+      {/* Sidebar Desktop */}
       <aside className="w-64 bg-white border-r border-slate-200 hidden lg:block sticky top-0 h-screen">
         <div className="p-8 flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
@@ -115,12 +113,44 @@ export default function BankDash() {
         </nav>
       </aside>
 
+      {/* Sidebar Mobile Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)}>
+          <aside className="w-64 bg-white h-full" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                  <span className="font-black">B</span>
+                </div>
+                <h1 className="text-2xl font-bold text-blue-900 tracking-tight">BankDash.</h1>
+              </div>
+              <button onClick={() => setMobileMenuOpen(false)} className="p-2">
+                <X size={24} className="text-slate-600" />
+              </button>
+            </div>
+            <nav className="mt-4">
+              <SidebarItem icon={LayoutDashboard} label="Dashboard" />
+              <SidebarItem icon={User} label="Accounts" />
+              <SidebarItem icon={CreditCard} label="Credit Cards" active />
+              <SidebarItem icon={ShieldCheck} label="Loans" />
+              <SidebarItem icon={Settings2} label="Services" />
+              <SidebarItem icon={Settings} label="Setting" />
+            </nav>
+          </aside>
+        </div>
+      )}
+
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="bg-white px-8 py-5 border-b border-slate-200 flex items-center justify-between sticky top-0 z-10">
-          <h2 className="text-2xl font-semibold text-blue-900">Credit Cards</h2>
-          <div className="flex items-center gap-6">
+        <header className="bg-white px-4 md:px-8 py-5 border-b border-slate-200 flex items-center justify-between sticky top-0 z-10">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2">
+              <Menu size={24} className="text-slate-600" />
+            </button>
+            <h2 className="text-xl md:text-2xl font-semibold text-blue-900">Credit Cards</h2>
+          </div>
+          <div className="flex items-center gap-2 md:gap-6">
             <div className="relative hidden md:block">
               <Search className="absolute left-3 top-2.5 text-slate-400" size={18} />
               <input 
@@ -129,19 +159,20 @@ export default function BankDash() {
                 className="bg-slate-100 pl-10 pr-4 py-2.5 rounded-full w-64 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
               />
             </div>
-            <button className="p-2.5 bg-slate-50 rounded-full text-slate-500 hover:bg-slate-100"><Settings size={20} /></button>
-            <button className="p-2.5 bg-slate-50 rounded-full text-red-400 hover:bg-slate-100"><Bell size={20} /></button>
-            <img src="https://i.pravatar.cc/150?u=eddy" alt="Profile" className="w-12 h-12 rounded-full object-cover border-2 border-slate-100" />
+            <button className="p-2 md:p-2.5 bg-slate-50 rounded-full text-slate-500 hover:bg-slate-100"><Settings size={18} className="md:w-5 md:h-5" /></button>
+            <button className="p-2 md:p-2.5 bg-slate-50 rounded-full text-red-400 hover:bg-slate-100 hidden sm:block"><Bell size={18} className="md:w-5 md:h-5" /></button>
+            <img src="https://i.pravatar.cc/150?u=eddy" alt="Profile" className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-slate-100" />
           </div>
         </header>
 
         {/* Dashboard Grid */}
-        <main className="p-8 space-y-10 overflow-y-auto">
+        <main className="p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 lg:space-y-10 overflow-y-auto">
           {/* Top Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
             <div className="lg:col-span-2">
               <SectionTitle title="My Cards" />
-              <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
+              {/* Cards dengan horizontal scroll di semua ukuran layar */}
+              <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
                 <CreditCardUI 
                   color="bg-gradient-to-r from-[#2D60FF] to-[#539BFF]" 
                   name="Eddy Cusuma" expiry="12/22" number="3778 **** **** 1234" 
@@ -151,7 +182,7 @@ export default function BankDash() {
                   name="Eddy Cusuma" expiry="12/22" number="3778 **** **** 1234" 
                 />
                 {/* White Card Variant */}
-                <div className="min-w-[320px] p-6 rounded-[25px] border border-slate-200 bg-white flex flex-col justify-between h-52 shadow-sm">
+                <div className="min-w-[280px] sm:min-w-[320px] p-5 sm:p-6 rounded-[20px] sm:rounded-[25px] border border-slate-200 bg-white flex flex-col justify-between h-48 sm:h-52 shadow-sm">
                    <div className="flex justify-between items-start">
                     <div>
                       <p className="text-xs text-slate-500 font-medium">Balance</p>
@@ -182,18 +213,18 @@ export default function BankDash() {
             
             <div>
               <SectionTitle title="Card Expense Statistics" />
-              <div className="bg-white p-6 rounded-[25px] h-52 flex items-center justify-center border border-slate-100 shadow-sm">
-                <div className="relative w-36 h-36 rounded-full border-[22px] border-blue-500 border-t-pink-500 border-l-yellow-400 border-r-cyan-400 rotate-45" />
+              <div className="bg-white p-6 rounded-[20px] sm:rounded-[25px] h-48 sm:h-52 flex items-center justify-center border border-slate-100 shadow-sm">
+                <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full border-[18px] sm:border-[22px] border-blue-500 border-t-pink-500 border-l-yellow-400 border-r-cyan-400 rotate-45" />
               </div>
             </div>
           </div>
 
           {/* Bottom Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
             <div className="lg:col-span-2">
               <SectionTitle title="Add New Card" />
-              <div className="bg-white p-8 rounded-[25px] border border-slate-100 shadow-sm">
-                <form className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div className="bg-white p-5 md:p-8 rounded-[20px] sm:rounded-[25px] border border-slate-100 shadow-sm">
+                <form className="grid grid-cols-1 md:grid-cols-2 gap-x-4 md:gap-x-8 gap-y-4 md:gap-y-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">Card Type</label>
                     <input type="text" placeholder="Classic" className="w-full p-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder:text-slate-300" />
@@ -221,7 +252,7 @@ export default function BankDash() {
 
             <div>
               <SectionTitle title="Card Setting" />
-              <div className="bg-white p-7 rounded-[25px] border border-slate-100 shadow-sm space-y-6">
+              <div className="bg-white p-5 md:p-7 rounded-[20px] sm:rounded-[25px] border border-slate-100 shadow-sm space-y-4 md:space-y-6">
                 {cardSettings.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-5 cursor-pointer group">
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${item.bg}`}>

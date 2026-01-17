@@ -10,6 +10,7 @@
   
   <style>
     body { font-family: 'Inter', sans-serif; color: #343C6A; }
+    html { scroll-behavior: smooth; }
     
     .logo-font { 
       font-family: 'Montserrat', sans-serif; 
@@ -17,14 +18,25 @@
       font-style: normal !important;
     }
 
-    /* SIDEBAR STYLES - FIXED ALIGNMENT */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
+
+    .btn-hover { transition: all 0.3s ease; }
+    .btn-hover:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(24, 20, 243, 0.3); }
+    .btn-hover:active { transform: scale(0.98); }
+
+    .tab-hover { transition: all 0.2s ease; }
+    .tab-hover:hover { color: #1814F3; } 
+
     .sidebar-active { 
       color: #1814F3 !important; 
       background: linear-gradient(90deg, #F5F7FA 0%, rgba(245, 247, 250, 0) 100%); 
       position: relative;
     }
 
-    /* Indikator batang biru melengkung di sisi kiri tanpa menggeser teks */
     .sidebar-active::before {
       content: "";
       position: absolute;
@@ -49,7 +61,14 @@
 
     nav a:hover { color: #1814F3 !important; }
 
-    /* Custom Input Style */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
     .custom-input {
       border: 1px solid #DFEAF2;
       border-radius: 15px;
@@ -59,10 +78,16 @@
       width: 100%;
       max-width: 500px;
       background-color: white;
+      transition: all 0.3s ease;
     }
     .custom-input:focus {
       outline: none;
       border-color: #1814F3;
+      box-shadow: 0 0 0 3px rgba(24, 20, 243, 0.1);
+      transform: scale(1.01);
+    }
+    .custom-input:hover {
+      border-color: #a5b4fc;
     }
     label {
       font-size: 16px;
@@ -71,7 +96,6 @@
       display: block;
     }
 
-    /* Tab Border */
     .tab-active {
       color: #1814F3;
       font-weight: 600;
@@ -79,7 +103,6 @@
       padding-bottom: 8px;
     }
 
-    /* --- CUSTOM TOGGLE SWITCH --- */
     .switch {
       position: relative;
       display: inline-block;
@@ -110,65 +133,102 @@
 </head>
 <body class="bg-[#F5F7FA] flex min-h-screen">
 
-  <aside class="w-[250px] bg-white border-r border-[#E6EFF5] hidden lg:block sticky top-0 h-screen shrink-0">
-    <div class="p-8 mb-4">
-      <div class="flex items-center gap-3 text-2xl logo-font">
-        <img src="../assets/icon.png" class="w-8 h-8" alt="logo">
+  <aside class="w-[200px] xl:w-[250px] bg-white border-r border-[#E6EFF5] hidden lg:block sticky top-0 h-screen shrink-0">
+    <div class="p-6 xl:p-8 mb-4">
+      <div class="flex items-center gap-2 xl:gap-3 text-xl xl:text-2xl logo-font">
+        <img src="../assets/icon.png" class="w-7 xl:w-8 h-7 xl:h-8" alt="logo">
         BankDash.
       </div>
     </div>
     <nav class="flex flex-col text-[#B1B1B1]">
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/dashboard.png" class="w-6 h-6"> Dashboard</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/transfer.png" class="w-6 h-6"> Transactions</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/user.png" class="w-6 h-6"> Accounts</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/economic-investment.png" class="w-6 h-6"> Investments</a>
-      <a href="../../index.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/credit-card biru.png" class="w-6 h-6"> Credit Cards</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/loan.png" class="w-6 h-6"> Loans</a>
-      <a href="Services.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/service.png" class="w-6 h-6"> Services</a>
-      <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/econometrics.png" class="w-6 h-6"> My Privileges</a>
-      <a href="SettingPages1.html" class="flex items-center gap-5 px-8 py-4 sidebar-active transition-all"><img src="../assets/settings biru.png" class="w-6 h-6"> Setting</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/dashboard.png" class="w-5 xl:w-6 h-5 xl:h-6"> Dashboard</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/transfer.png" class="w-5 xl:w-6 h-5 xl:h-6"> Transactions</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/user.png" class="w-5 xl:w-6 h-5 xl:h-6"> Accounts</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/economic-investment.png" class="w-5 xl:w-6 h-5 xl:h-6"> Investments</a>
+      <a href="../../index.html" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/credit-card biru.png" class="w-5 xl:w-6 h-5 xl:h-6"> Credit Cards</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/loan.png" class="w-5 xl:w-6 h-5 xl:h-6"> Loans</a>
+      <a href="Services.html" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/service.png" class="w-5 xl:w-6 h-5 xl:h-6"> Services</a>
+      <a href="#" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/econometrics.png" class="w-5 xl:w-6 h-5 xl:h-6"> My Privileges</a>
+      <a href="SettingPages1.html" class="flex items-center gap-4 xl:gap-5 px-6 xl:px-8 py-4 sidebar-active transition-all"><img src="../assets/settings biru.png" class="w-5 xl:w-6 h-5 xl:h-6"> Setting</a>
     </nav>
   </aside>
 
+  <div id="mobileSidebar" class="fixed inset-0 bg-black/50 z-50 lg:hidden hidden">
+    <aside class="w-[250px] bg-white h-full" onclick="event.stopPropagation()">
+      <div class="p-6 mb-4 flex items-center justify-between">
+        <div class="flex items-center gap-3 text-2xl logo-font">
+          <img src="../assets/icon.png" class="w-8 h-8" alt="logo">
+          BankDash.
+        </div>
+        <button onclick="toggleMobileMenu()" class="p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <nav class="flex flex-col text-[#B1B1B1]">
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/dashboard.png" class="w-6 h-6"> Dashboard</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/transfer.png" class="w-6 h-6"> Transactions</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/user.png" class="w-6 h-6"> Accounts</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/economic-investment.png" class="w-6 h-6"> Investments</a>
+        <a href="../../index.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/credit-card biru.png" class="w-6 h-6"> Credit Cards</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/loan.png" class="w-6 h-6"> Loans</a>
+        <a href="Services.html" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/service.png" class="w-6 h-6"> Services</a>
+        <a href="#" class="flex items-center gap-5 px-8 py-4 hover:text-[#1814F3] transition-all"><img src="../assets/econometrics.png" class="w-6 h-6"> My Privileges</a>
+        <a href="SettingPages1.html" class="flex items-center gap-5 px-8 py-4 sidebar-active transition-all"><img src="../assets/settings biru.png" class="w-6 h-6"> Setting</a>
+      </nav>
+    </aside>
+  </div>
+
   <main class="flex-1 overflow-y-auto flex flex-col">
-    <header class="bg-white px-8 py-5 flex justify-between items-center border-b border-[#E6EFF5] sticky top-0 z-10">
-      <h1 class="text-2xl font-semibold text-[#343C6A]">Setting</h1>
-      <div class="flex items-center gap-6">
-        <div class="relative hidden md:block">
+    <header class="bg-white px-4 md:px-8 py-5 flex justify-between items-center border-b border-[#E6EFF5] sticky top-0 z-10">
+      <div class="flex items-center gap-3 flex-1 lg:flex-none">
+        <button onclick="toggleMobileMenu()" class="lg:hidden p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="text-xl md:text-2xl font-semibold text-[#343C6A] text-center lg:text-left">Setting</h1>
+      </div>
+      <div class="flex items-center gap-3 md:gap-6">
+        <div class="relative hidden lg:block">
           <img src="../assets/search.png" alt="Search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-50 w-5">
           <input type="text" placeholder="Search for something" class="bg-[#F5F7FA] pl-12 pr-6 py-3 rounded-full w-[280px] text-sm focus:outline-none">
         </div>
-        <div class="flex gap-4">
-          <button class="w-12 h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center"><img src="../assets/settings.png" class="w-6 h-6"></button>
-          <button class="w-12 h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center"><img src="../assets/notification.png" class="w-6 h-6"></button>
-          <img src="../assets/Mask Group.png" class="w-12 h-12 rounded-full object-cover" alt="Profile">
+        <div class="flex gap-2 md:gap-4">
+          <a href="SettingPages1.html" class="w-10 h-10 md:w-12 md:h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center hover:bg-[#E7EDFF] transition-all" title="Settings"><img src="../assets/settings.png" class="w-5 h-5 md:w-6 md:h-6"></a>
+          <button class="w-10 h-10 md:w-12 md:h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center hover:bg-[#E7EDFF] transition-all" title="Notifications"><img src="../assets/notification.png" class="w-5 h-5 md:w-6 md:h-6"></button>
+          <a href="SettingPages1.html" title="Profile"><img src="../assets/Mask Group.png" class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover hover:ring-2 hover:ring-[#1814F3] transition-all cursor-pointer" alt="Profile"></a>
         </div>
       </div>
     </header>
 
-    <div class="p-8 w-full flex-1">
-      <div class="bg-white rounded-[25px] p-8 md:p-12 shadow-sm min-h-full">
+    <div class="bg-white px-4 py-4 border-b border-[#E6EFF5] lg:hidden">
+      <div class="relative w-full">
+        <img src="../assets/search.png" alt="Search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-50 w-5">
+        <input type="text" placeholder="Search for something" class="bg-[#F5F7FA] pl-12 pr-6 py-3 rounded-full w-full text-sm focus:outline-none">
+      </div>
+    </div>
+
+    <div class="p-4 md:p-6 lg:p-8 w-full flex-1">
+      <div class="bg-white rounded-[20px] md:rounded-[25px] p-5 md:p-8 lg:p-10 shadow-sm min-h-full">
         
-        <div class="flex gap-16 border-b border-[#F4F5F7] mb-12">
-          <a href="SettingPages1.html" class="pb-3 text-[#718EBF] font-medium hover:text-[#1814F3] transition-all cursor-pointer">Edit Profile</a>
-          <a href="SettingPages2.html" class="pb-3 text-[#718EBF] font-medium hover:text-[#1814F3] transition-all cursor-pointer">Preferences</a>
-          <a href="SettingPages3.html" class="tab-active cursor-pointer">Security</a>
+        <div class="flex gap-6 md:gap-10 lg:gap-16 border-b border-[#F4F5F7] mb-8 md:mb-10 lg:mb-12 overflow-x-auto scrollbar-hide">
+          <a href="SettingPages1.html" class="pb-3 text-[#718EBF] font-medium hover:text-[#1814F3] transition-all cursor-pointer whitespace-nowrap text-sm md:text-base tab-hover">Edit Profile</a>
+          <a href="SettingPages2.html" class="pb-3 text-[#718EBF] font-medium hover:text-[#1814F3] transition-all cursor-pointer whitespace-nowrap text-sm md:text-base tab-hover">Preference</a>
+          <a href="SettingPages3.html" class="tab-active cursor-pointer whitespace-nowrap text-sm md:text-base">Security</a>
         </div>
 
-        <div class="space-y-12">
+        <div class="space-y-10 md:space-y-12">
           <div>
-            <h3 class="text-lg font-semibold text-[#343C6A] mb-5">Two-factor Authentication</h3>
-            <div class="flex items-center gap-5">
-              <label class="switch">
+            <h3 class="text-base md:text-lg font-semibold text-[#343C6A] mb-4 md:mb-5">Two-factor Authentication</h3>
+            <div class="flex items-center gap-4 md:gap-5">
+              <label class="switch shrink-0">
                 <input type="checkbox" checked>
                 <span class="slider"></span>
               </label>
-              <span class="text-[15px] text-[#718EBF]">Enable or disable two factor authentication</span>
+              <span class="text-sm md:text-[15px] text-[#718EBF]">Enable or disable two factor authentication</span>
             </div>
           </div>
 
           <div>
-            <h3 class="text-lg font-semibold text-[#343C6A] mb-6">Change Password</h3>
+            <h3 class="text-base md:text-lg font-semibold text-[#343C6A] mb-5 md:mb-6">Change Password</h3>
             <form class="flex flex-col h-full">
               <div class="space-y-6">
                 <div>
@@ -182,8 +242,8 @@
                 </div>
               </div>
 
-              <div class="flex justify-end mt-20">
-                <button type="submit" class="bg-[#1814F3] text-white px-20 py-3.5 rounded-[15px] font-semibold text-lg hover:opacity-90 transition-all shadow-md">
+              <div class="flex justify-end mt-12 md:mt-16 lg:mt-20">
+                <button type="submit" class="bg-[#1814F3] text-white px-12 md:px-16 lg:px-20 py-3 md:py-3.5 rounded-[15px] font-semibold text-base md:text-lg hover:opacity-90 transition-all shadow-md w-full md:w-auto btn-hover">
                   Save
                 </button>
               </div>
@@ -195,6 +255,19 @@
     </div>
   </main>
 
-  <script>lucide.createIcons();</script>
+  <script>
+    lucide.createIcons();
+
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mobileSidebar');
+      sidebar.classList.toggle('hidden');
+    }
+
+    document.getElementById('mobileSidebar').addEventListener('click', function(e) {
+      if (e.target === this) {
+        toggleMobileMenu();
+      }
+    });
+  </script>
 </body>
 </html>
