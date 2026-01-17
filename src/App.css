@@ -1,10 +1,8 @@
-/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Mengatur font agar lebih bersih seperti di desain */
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
@@ -13,10 +11,9 @@ body {
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #f8fafc; /* Warna background abu-abu sangat muda */
+  background-color: #f8fafc; 
 }
 
-/* Opsional: Menghilangkan scrollbar pada kontainer kartu jika ingin lebih rapi */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
